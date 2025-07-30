@@ -1,111 +1,106 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-  <title>Professionals Pride - Hotel Booking</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Hotel Booking – Professionals Pride</title>
   <style>
     body {
       font-family: Arial, sans-serif;
-      max-width: 600px;
-      margin: auto;
       padding: 20px;
-      background: #f7f7f7;
+      background: #f5f5f5;
     }
-    h2 {
+    h1 {
       text-align: center;
-      color: #2c3e50;
+      color: #333;
     }
-    label {
-      margin-top: 10px;
-      display: block;
-      font-weight: bold;
+    form {
+      max-width: 500px;
+      margin: 0 auto;
+      background: white;
+      padding: 20px;
+      border-radius: 8px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.1);
     }
     input, select {
       width: 100%;
-      padding: 10px;
-      margin-top: 5px;
-      margin-bottom: 15px;
+      padding: 8px;
+      margin: 10px 0;
       border: 1px solid #ccc;
       border-radius: 4px;
     }
     button {
-      background-color: #27ae60;
+      background: #007bff;
       color: white;
-      padding: 12px;
       border: none;
-      width: 100%;
+      padding: 12px;
       border-radius: 4px;
       cursor: pointer;
+      width: 100%;
       font-size: 16px;
     }
     button:hover {
-      background-color: #219150;
+      background: #0056b3;
+    }
+    .success {
+      text-align: center;
+      color: green;
+      font-weight: bold;
+    }
+    .error {
+      text-align: center;
+      color: red;
+      font-weight: bold;
     }
   </style>
 </head>
 <body>
-  <h2>Book Your Stay - Professionals Pride</h2>
+  <h1>Hotel Booking – Professionals Pride</h1>
   <form id="bookingForm">
     <label for="name">Full Name</label>
-    <input type="text" name="name" id="name" required>
+    <input type="text" id="name" name="name" required />
 
     <label for="room">Room Type</label>
-    <select name="room" id="room">
+    <select id="room" name="room" required>
+      <option value="">Select</option>
       <option value="Studio">Studio</option>
       <option value="1BHK">1BHK</option>
       <option value="2BHK">2BHK</option>
     </select>
 
-    <label for="start">Check-in Date</label>
-    <input type="date" name="start" id="start" required>
+    <label for="start">Start Date</label>
+    <input type="date" id="start" name="start" required />
 
     <label for="days">Number of Days</label>
-    <input type="number" name="days" id="days" min="1" required>
+    <input type="number" id="days" name="days" required min="1" />
 
     <label for="adults">Number of Adults</label>
-    <input type="number" name="adults" id="adults" min="1" required>
+    <input type="number" id="adults" name="adults" required min="1" />
 
     <label for="mob">Mobile Number</label>
-    <input type="tel" name="mob" id="mob" required>
+    <input type="tel" id="mob" name="mob" required pattern="[0-9]{10}" />
 
-    <button type="submit">Book Now & Pay</button>
+    <button type="submit">Submit & Pay</button>
+
+    <p id="responseMsg" class=""></p>
   </form>
 
   <script>
-    const roomRates = {
-      "Studio": 900,
-      "1BHK": 1200,
-      "2BHK": 1500
-    };
+    const scriptURL = "https://script.google.com/macros/s/AKfycbzBF421dH-H9U3PrBDLAC71r4RM7-ZUXBk0l9oW8qGPe6OSLvjXuQPgWj4MuV6aYdck/exec";
+    const razorpayLink = "https://razorpay.me/@professionalspride";
 
-    const form = document.getElementById("bookingForm");
-
-    form.addEventListener("submit", async function (e) {
+    document.getElementById("bookingForm").addEventListener("submit", function (e) {
       e.preventDefault();
-      const formData = new FormData(form);
-      const data = Object.fromEntries(formData.entries());
+      const form = e.target;
 
-      // Calculate total cost
-      const room = data.room;
-      const days = parseInt(data.days);
-      const rate = roomRates[room] || 0;
-      const total = rate * days;
+      const data = {
+        name: form.name.value.trim(),
+        room: form.room.value,
+        start: form.start.value,
+        days: form.days.value,
+        adults: form.adults.value,
+        mob: form.mob.value
+      };
 
-      const confirmPay = confirm(`You will now be redirected to pay ₹${total} for ${days} day(s) in a ${room}. Proceed?`);
-      if (!confirmPay) return;
-
-      try {
-        await fetch("https://script.google.com/macros/s/AKfycbzBF421dH-H9U3PrBDLAC71r4RM7-ZUXBk0l9oW8qGPe6OSLvjXuQPgWj4MuV6aYdck/exec", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify(data)
-        });
-        window.location.href = "https://razorpay.me/@professionalspride";
-      } catch (error) {
-        alert("Error submitting form. Please try again.");
-        console.error("Submission error:", error);
-      }
-    });
-  </script>
-</body>
-</html>
+      document.getElementById("responseMsg").textContent = "Submitting...";
+      document.getElementById("responseMsg
